@@ -3,24 +3,32 @@ from tkinter.ttk import *
 from struct_c import *
 from struct_c import *
 
-tipos = ['str','int','float','fk']
-campos = []
-lastRow = 2
+items = []
+tipos_dato = ['int','float','str','fk']
 
-def AgregarCampo():
-    lastRow+1
-    tipo_campo = Combobox(master=main,values=tipos).grid(row=lastRow)
-    nombre_campo = Entry(master=main).grid(row=lastRow,column=1)
-    campos.append = [tipo_campo,nombre_campo]
-    return
+def agregar_field():
+    items.append([Combobox(frame_fields,values=tipos_dato),Entry(frame_fields)])
+
+    for index,item in enumerate(items):
+        item[0].grid(row=index,padx=5,pady=10)
+        item[1].grid(row=index,column=1,padx=5,pady=10)
+
+    Tk.update(main)
 
 main = Tk()
+main.geometry("400x500")
 main.title("PyCGen")
-Label(master=main,text='Estructura:').grid(row=0)
-nombre_estrucutra = Entry(master=main)
-nombre_estrucutra.grid(row=0,column=1)
-Label(master=main,text='Campos:').grid(row=1)
-Label(master=main,text='int').grid(row=2)
-Label(master=main,text='id').grid(row=2,column=1)
-btn_agregar_campo = Button(master=main,text='Agregar campo',command=AgregarCampo).grid(row=20)
+
+frame_fields = Frame(main)
+frame_buttons = Frame(main)
+
+btn_agregar = Button(frame_buttons,text='Agregar',command=agregar_field)
+btn_salir = Button(frame_buttons,text='Salir',command=main.destroy)
+
+btn_agregar.pack()
+btn_salir.pack()
+
+frame_fields.pack()
+frame_buttons.pack(side=BOTTOM)
+
 main.mainloop()
