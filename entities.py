@@ -21,262 +21,282 @@ class Estructura():
         self.campos = campos
     
     def _generar_includes(self):
-        return '''#include <stdio.h>
-        #include <stdlib.h>
-        #include <string.h>
-        #include "utn.h"
-        #include "{may}.h"
+        s_minus = self.nombre_min
+        s_mayus = self.nombre_may
 
-        static int lastId=0;
+        r = (f"#include <stdio.h>\n"
+            f"#include <stdlib.h>\n"
+            f"#include <string.h>\n"
+            f"#include \"utn.h\"\n"
+            f"#include \"{s_mayus}.h\"\n\n"
 
-        void {min}_idInit(int id)
-        {{
-            lastId=id+1;
-        }}
+            f"static int lastId=0;\n\n"
 
-        int {min}_idGenerator()
-        {{
-            return lastId++;
-        }}
+            f"void {s_minus}_idInit(int id)\n"
+            f"{{\n"
+            f"    lastId=id+1;\n"
+            f"}}\n\n"
 
-        int {min}_setIdStr({may}* this,char* idStr)
-        {{
-            int ret=-1;
-            int bufferId;
-            if(this!=NULL && idStr!=NULL)
-            {{
-                if(utn_isValidInt(idStr))
-                {{
-                    bufferId = atoi(idStr);
-                    if(!{min}_setId(this,bufferId))
-                    {{
-                        ret=0;
-                    }}
-                }}
-            }}
-            return ret;
-        }}
+            f"int {s_minus}_idGenerator()\n"
+            f"{{\n"
+            f"    return lastId++;\n"
+            f"}}\n\n"
 
-        int {min}_setId({may}* this,int id)
-        {{
-            int ret=-1;
-            if(this!=NULL && id>=0)
-            {{
-                this->id=id;
-                ret=0;
-            }}
-            return ret;
-        }}
+            f"int {s_minus}_setIdStr({s_mayus}* this,char* idStr)\n"
+            f"{{\n"
+            f"    int ret=-1;\n"
+            f"    int bufferId;\n"
+            f"    if(this!=NULL && idStr!=NULL)\n"
+            f"    {{\n"
+            f"        if(utn_isValidInt(idStr))\n"
+            f"        {{\n"
+            f"            bufferId = atoi(idStr);\n"
+            f"            if(!{s_minus}_setId(this,bufferId))\n"
+            f"            {{\n"
+            f"                ret=0;\n"
+            f"            }}\n"
+            f"        }}\n"
+            f"    }}\n"
+            f"    return ret;\n"
+            f"}}\n\n"
 
-        int {min}_getId({may}* this,int* id)
-        {{
-            int ret=-1;
-            if(this!=NULL&&id!=NULL)
-            {{
-                *id=this->id;
-                ret=0;
-            }}
-            return ret;
-        }}
+            f"int {s_minus}_setId({s_mayus}* this,int id)\n"
+            f"{{\n"
+            f"    int ret=-1;\n"
+            f"    if(this!=NULL && id>=0)\n"
+            f"    {{\n"
+            f"        this->id=id;\n"
+            f"        ret=0;\n"
+            f"    }}\n"
+            f"    return ret;\n"
+            f"}}\n\n"
 
-        {may}* {min}_new()
-        {{
-            return ({may}*)malloc(sizeof({may}));
-        }}
+            f"int {s_minus}_getId({s_mayus}* this,int* id)\n"
+            f"{{\n"
+            f"    int ret=-1;\n"
+            f"    if(this!=NULL&&id!=NULL)\n"
+            f"    {{\n"
+            f"        *id=this->id;\n"
+            f"        ret=0;\n"
+            f"    }}\n"
+            f"    return ret;\n"
+            f"}}\n\n"
 
-        int {min}_delete({may}* this)
-        {{
-            int ret=-1;
-            if(this!=NULL)
-            {{
-                free(this);
-                ret=0;
-            }}
-            return ret;
-        }}
+            f"{s_mayus}* {s_minus}_new()\n"
+            f"{{\n"
+            f"    return ({s_mayus}*)malloc(sizeof({s_mayus}));\n"
+            f"}}\n\n"
 
-        int {min}_compareId(void* pElementA,void* pElementB)
-        {{
-            int ret = 0;
-            if((({may}*)pElementA)->id > (({may}*)pElementB)->id)
-            {{
-                ret = 1;
-            }}
-            if((({may}*)pElementA)->id < (({may}*)pElementB)->id)
-            {{
-                ret = -1;
-            }}
-            return ret;
-        }}
+            f"int {s_minus}_delete({s_mayus}* this)\n"
+            f"{{\n"
+            f"    int ret=-1;\n"
+            f"    if(this!=NULL)\n"
+            f"    {{\n"
+            f"        free(this);\n"
+            f"        ret=0;\n"
+            f"    }}\n"
+            f"    return ret;\n"
+            f"}}\n\n"
 
-        '''.format(min=self.nombre_min,may=self.nombre_may)
+            f"int {s_minus}_compareId(void* pElementA,void* pElementB)\n"
+            f"{{\n"
+            f"    int ret = 0;\n"
+            f"    if((({s_mayus}*)pElementA)->id > (({s_mayus}*)pElementB)->id)\n"
+            f"    {{\n"
+            f"        ret = 1;\n"
+            f"    }}\n"
+            f"    if((({s_mayus}*)pElementA)->id < (({s_mayus}*)pElementB)->id)\n"
+            f"    {{\n"
+            f"        ret = -1;\n"
+            f"    }}\n"
+            f"    return ret;\n"
+            f"}}\n\n")
+
+        return r
 
     def _generar_int(self,campo):
-        return '''int {structMin}_set{campoMay}Str({structMay}* this,char* {campoMin}Str)
-        {{
-            int ret=-1;
-            int buffer{campoMay};
-            if(this!=NULL)
-                {{
-                    if(utn_isValidInt({campoMin}Str))
-                    {{
-                        buffer{campoMay} = atoi({campoMin}Str);
-                        if(!{structMin}_set{campoMay}(this,buffer{campoMay}))
-                        {{
-                            ret=0;
-                        }}
-                    }}
-                }}
-            return ret;
-        }}
+        s_minus = self.nombre_min
+        s_mayus = self.nombre_may
+        c_minus = campo.nombre_min
+        c_mayus = campo.nombre_may
 
-        int {structMin}_set{campoMay}({structMay}* this,int {campoMin})
-        {{
-            int ret=-1;
-            if(this!=NULL && {campoMin}>=0)
-            {{
-                this->sueldo={campoMin};
-                ret=0;
-            }}
-            return ret;
-        }}
+        r = (f"int {s_minus}_set{c_mayus}Str({s_mayus}* this,char* {c_minus}Str)\n"
+            f"{{\n"
+            f"    int ret=-1;\n"
+            f"    int buffer{c_mayus};\n"
+            f"    if(this!=NULL)\n"
+            f"        {{\n"
+            f"            if(utn_isValidInt({c_minus}Str))\n"
+            f"            {{\n"
+            f"                buffer{c_mayus} = atoi({c_minus}Str);\n"
+            f"                if(!{s_minus}_set{c_mayus}(this,buffer{c_mayus}))\n"
+            f"                {{\n"
+            f"                    ret=0;\n"
+            f"                }}\n"
+            f"            }}\n"
+            f"        }}\n"
+            f"    return ret;\n"
+            f"}}\n\n"
 
-        int {structMin}_get{campoMay}({structMay}* this,int* {campoMin})
-        {{
-            int ret=-1;
-            if(this!=NULL && {campoMin}!=NULL)
-            {{
-                *{campoMin}=this->{campoMin};
-                ret=0;
-            }}
-            return ret;
-        }}
+            f"int {s_minus}_set{c_mayus}({s_mayus}* this,int {c_minus})\n"
+            f"{{\n"
+            f"    int ret=-1;\n"
+            f"    if(this!=NULL && {c_minus}>=0)\n"
+            f"    {{\n"
+            f"        this->sueldo={c_minus};\n"
+            f"        ret=0;\n"
+            f"    }}\n"
+            f"    return ret;\n"
+            f"}}\n\n"
 
-        int {structMin}_compare{campoMay}(void* pElementA,void* pElementB)
-        {{
-            int ret = 0;
-            if((({structMay}*)pElementA)->{campoMin} > (({structMay}*)pElementB)->{campoMin})
-            {{
-                ret = 1;
-            }}
-            if((({structMay}*)pElementA)->{campoMin} < (({structMay}*)pElementB)->{campoMin})
-            {{
-                ret = -1;
-            }}
-            return ret;
-        }}
+            f"int {s_minus}_get{c_mayus}({s_mayus}* this,int* {c_minus})\n"
+            f"{{\n"
+            f"    int ret=-1;\n"
+            f"    if(this!=NULL && {c_minus}!=NULL)\n"
+            f"    {{\n"
+            f"        *{c_minus}=this->{c_minus};\n"
+            f"        ret=0;\n"
+            f"    }}\n"
+            f"    return ret;\n"
+            f"}}\n\n"
 
-        '''.format(campoMin=campo.nombre_min,campoMay=campo.nombre_may,structMin=self.nombre_min,structMay=self.nombre_may)
+            f"int {s_minus}_compare{c_mayus}(void* pElementA,void* pElementB)\n"
+            f"{{\n"
+            f"    int ret = 0;\n"
+            f"    if((({s_mayus}*)pElementA)->{c_minus} > (({s_mayus}*)pElementB)->{c_minus})\n"
+            f"    {{\n"
+            f"        ret = 1;\n"
+            f"    }}\n"
+            f"    if((({s_mayus}*)pElementA)->{c_minus} < (({s_mayus}*)pElementB)->{c_minus})\n"
+            f"    {{\n"
+            f"        ret = -1;\n"
+            f"    }}\n"
+            f"    return ret;\n"
+            f"}}\n\n")
+
+        return r
 
     def _generar_float(self,campo):
-        return '''int {structMin}_set{campoMay}Str({structMay}* this,char* {campoMin}Str)
-        {{
-            int ret=-1;
-            int buffer{campoMay};
-            if(this!=NULL)
-            {{
-                if(utn_isValidFloat({campoMin}Str))
-                {{
-                    buffer{campoMay} = atof({campoMin}Str);
-                    if(!{structMin}_set{campoMay}(this,buffer{campoMay}))
-                    {{
-                        ret=0;
-                    }}
-                }}
-            }}
-            return ret;
-        }}
+        s_minus = self.nombre_min
+        s_mayus = self.nombre_may
+        c_minus = campo.nombre_min
+        c_mayus = campo.nombre_may
 
-        int {structMin}_set{campoMay}({structMay}* this,float {campoMin})
-        {{
-            int ret=-1;
-            if(this!=NULL && {campoMin}>=0)
-            {{
-                this->sueldo={campoMin};
-                ret=0;
-            }}
-            return ret;
-        }}
+        r = (f"int {s_minus}_set{c_mayus}Str({s_mayus}* this,char* {c_minus}Str)\n"
+            f"{{\n"
+            f"    int ret=-1;\n"
+            f"    int buffer{c_mayus};\n"
+            f"    if(this!=NULL)\n"
+            f"    {{\n"
+            f"        if(utn_isValidFloat({c_minus}Str))\n"
+            f"        {{\n"
+            f"            buffer{c_mayus} = atof({c_minus}Str);\n"
+            f"            if(!{s_minus}_set{c_mayus}(this,buffer{c_mayus}))\n"
+            f"            {{\n"
+            f"                ret=0;\n"
+            f"            }}\n"
+            f"        }}\n"
+            f"    }}\n"
+            f"    return ret;\n"
+            f"}}\n\n"
 
-        int {structMin}_get{campoMay}({structMay}* this,float* {campoMin})
-        {{
-            int ret=-1;
-            if(this!=NULL && {campoMin}!=NULL)
-            {{
-                *{campoMin}=this->{campoMin};
-                ret=0;
-            }}
-            return ret;
-        }}
+            f"int {s_minus}_set{c_mayus}({s_mayus}* this,float {c_minus})\n"
+            f"{{\n"
+            f"    int ret=-1;\n"
+            f"    if(this!=NULL && {c_minus}>=0)\n"
+            f"    {{\n"
+            f"        this->sueldo={c_minus};\n"
+            f"        ret=0;\n"
+            f"    }}\n"
+            f"    return ret;\n"
+            f"}}\n"
 
-        int {structMin}_compare{campoMay}(void* pElementA,void* pElementB)
-        {{
-            int ret = 0;
-            if((({structMay}*)pElementA)->{campoMin} > (({structMay}*)pElementB)->{campoMin})
-            {{
-                ret = 1;
-            }}
-            if((({structMay}*)pElementA)->{campoMin} < (({structMay}*)pElementB)->{campoMin})
-            {{
-                ret = -1;
-            }}
-            return ret;
-        }}
+            f"int {s_minus}_get{c_mayus}({s_mayus}* this,float* {c_minus})\n"
+            f"{{\n"
+            f"    int ret=-1;\n"
+            f"    if(this!=NULL && {c_minus}!=NULL)\n"
+            f"    {{\n"
+            f"        *{c_minus}=this->{c_minus};\n"
+            f"        ret=0;\n"
+            f"    }}\n"
+            f"    return ret;\n"
+            f"}}\n"
 
-        '''.format(campoMin=campo.nombre_min,campoMay=campo.nombre_may,structMin=self.nombre_min,structMay=self.nombre_may)
+            f"int {s_minus}_compare{c_mayus}(void* pElementA,void* pElementB)\n"
+            f"{{\n"
+            f"    int ret = 0;\n"
+            f"    if((({s_mayus}*)pElementA)->{c_minus} > (({s_mayus}*)pElementB)->{c_minus})\n"
+            f"    {{\n"
+            f"        ret = 1;\n"
+            f"    }}\n"
+            f"    if((({s_mayus}*)pElementA)->{c_minus} < (({s_mayus}*)pElementB)->{c_minus})\n"
+            f"    {{\n"
+            f"        ret = -1;\n"
+            f"    }}\n"
+            f"    return ret;\n"
+            f"}}\n\n")
+
+        return r
     
     def _generar_string(self,campo):
-        return '''int {strucMin}_set{campoMay}({structMay}* this,char* {campoMin})
-        {{
-            int ret=-1;
-            if(this != NULL && utn_isValidName({campoMin}))
-            {{
-                strncpy(this->{campoMin},{campoMin},sizeof(this->{campoMin}));
-                ret=0;
-            }}
-            return ret;
-        }}
+        s_minus = self.nombre_min
+        s_mayus = self.nombre_may
+        c_minus = campo.nombre_min
+        c_mayus = campo.nombre_may
 
-        int {strucMin}_get{campoMay}({structMay}* this,char* {campoMin})
-        {{
-            int ret=-1;
-            if(this!=NULL && {campoMin}!=NULL)
-            {{
-                strncpy({campoMin},this->{campoMin},sizeof(this->{campoMin}));
-                ret=0;
-            }}
-            return ret;
-        }}
+        r = (f"int {s_minus}_set{c_mayus}({s_mayus}* this,char* {c_minus})\n"
+            f"{{\n"
+            f"    int ret=-1;\n"
+            f"    if(this != NULL && utn_isValidName({c_minus}))\n"
+            f"    {{\n"
+            f"        strncpy(this->{c_minus},{c_minus},sizeof(this->{c_minus}));\n"
+            f"        ret=0;\n"
+            f"    }}\n"
+            f"    return ret;\n"
+            f"}}\n\n"
 
-        int {strucMin}_compare{campoMay}(void* pElementA,void* pElementB)
-        {{
-            int ret = 0;
-            if(strcmp((({structMay}*)pElementA)->{campoMin},(({structMay}*)pElementB)->{campoMin})>0)
-            {{
-                ret = 1;
-            }}
-            if(strcmp((({structMay}*)pElementA)->{campoMin},(({structMay}*)pElementB)->{campoMin})<0)
-            {{
-                ret = -1;
-            }}
-            return ret;
-        }}
+            f"int {s_minus}_get{c_mayus}({s_mayus}* this,char* {c_minus})\n"
+            f"{{\n"
+            f"    int ret=-1;\n"
+            f"    if(this!=NULL && {c_minus}!=NULL)\n"
+            f"    {{\n"
+            f"        strncpy({c_minus},this->{c_minus},sizeof(this->{c_minus}));\n"
+            f"        ret=0;\n"
+            f"    }}\n"
+            f"    return ret;\n"
+            f"}}\n\n"
 
-        '''.format(campoMin=campo.nombre_min,campoMay=campo.nombre_may,strucMin=self.nombre_min,structMay=self.nombre_may)
+            f"int {s_minus}_compare{c_mayus}(void* pElementA,void* pElementB)\n"
+            f"{{\n"
+            f"    int ret = 0;\n"
+            f"    if(strcmp((({s_mayus}*)pElementA)->{c_minus},(({s_mayus}*)pElementB)->{c_minus})>0)\n"
+            f"    {{\n"
+            f"        ret = 1;\n"
+            f"    }}\n"
+            f"    if(strcmp((({s_mayus}*)pElementA)->{c_minus},(({s_mayus}*)pElementB)->{c_minus})<0)\n"
+            f"    {{\n"
+            f"        ret = -1;\n"
+            f"    }}\n"
+            f"    return ret;\n"
+            f"}}\n\n")
+            
+        return r
 
-    def _generar_condicion(self,campo):
+    def _generar_condicion(self,campo):        
         if campo.tipo == TipoDeCampo.INT or campo.tipo == TipoDeCampo.FLOAT or campo.tipo == TipoDeCampo.FKEY:
-            return '||{structMin}_set{campoMayus}Str(aux,{campoMin}Str)'.format(structMin=self.nombre_min,campoMayus=campo.nombre_may,campoMin=campo.nombre_min)
+            return f'||{self.nombre_min}_set{campo.nombre_may}Str(aux,{campo.nombre_min}Str)'
+
         elif campo.tipo == TipoDeCampo.STRING:
-            return '||{structMin}_set{campoMayus}(aux,{campoMin}Str)'.format(structMin=self.nombre_min,campoMayus=campo.nombre_may,campoMin=campo.nombre_min)
+            return f'||{self.nombre_min}_set{campo.nombre_may}(aux,{campo.nombre_min}Str)'
 
     def _generar_parametros(self,campo):
-        return ',char* {campoMin}Str'.format(campoMin=campo.nombre_min)
+        return f',char* {campo.nombre_min}Str'
 
-    def _generar_cuerpo(self):
+    def generar_cuerpo(self):
         condicion = ''
         parametros = ''
-        cuerpo = ''
+        cuerpo = self._generar_includes()
+
         for campo in self.campos:
 
             condicion += self._generar_condicion(campo)
@@ -291,21 +311,71 @@ class Estructura():
             elif campo.tipo == TipoDeCampo.STRING:
                 cuerpo += self._generar_string(campo)
 
-        newParam = '''{structMay}* {structMin}_newParametros({head})
-        {{
-            {structMay}* aux;
-            aux={structMin}_new();
-            if(aux!=NULL)
-            {{
-                if({condition})
-                {{
-                    {structMin}_delete(aux);
-                    aux=NULL;
-                }}
-            }}
-            return aux;
-        }}
+        minuns = self.nombre_min
+        mayus = self.nombre_may
 
-        '''.format(structMin=self.nombre,structMay=self.nombre_may,head=parametros,condition=condicion)
+        new = (f"{mayus}* {minuns}_newParametros({parametros})\n"
+            f"{{\n"
+            f"    {mayus}* aux;\n"
+            f"    aux={minuns}_new();\n"
+            f"    if(aux!=NULL)\n"
+            f"    {{\n"
+            f"        if({condicion})\n"
+            f"        {{\n"
+            f"            {minuns}_delete(aux);\n"
+            f"            aux=NULL;\n"
+            f"        }}\n"
+            f"    }}\n"
+            f"    return aux;\n"
+            f"}}\n\n")
 
-        return cuerpo + newParam
+        return cuerpo + new
+
+    def _generar_includes_h(self):
+        minus = self.nombre_min
+        mayus = self.nombre_may
+
+        campos = '    int id;\n'
+
+        for campo in self.campos:
+            if(campo.tipo == TipoDeCampo.STRING):
+                campos += f"    char {campo.nombre_min}[128];\n"
+
+            elif(campo.tipo == TipoDeCampo.INT or campo.tipo == TipoDeCampo.FKEY):
+                campos += f"    int {campo.nombre_min};\n"
+
+            elif(campo.tipo == TipoDeCampo.FLOAT):
+                campos += f"    float {campo.nombre_min};\n"
+
+        r = (f"#ifndef {mayus}_H_INCLUDED\n"
+            f"#define {mayus}_H_INCLUDED\n\n"
+
+            f"typedef struct\n"
+            f"{{\n"
+            f"{campos}"
+            f"}}{mayus};\n\n"
+
+            f"void {minus}_idInit(int id);\n"
+            f"int {minus}_idGenerator();\n\n"
+
+            f"{mayus}* {minus}_new();\n"
+            f"int {minus}_delete({mayus}* this);\n\n"
+
+            f"int {minus}_setIdStr({mayus}* this,char* idStr);\n"
+            f"int {minus}_setId({mayus}* this,int id);\n"
+            f"int {minus}_getId({mayus}* this,int* id);\n"
+            f"int {minus}_compareId(void* p{mayus}A,void* p{mayus}B);\n\n")
+
+        return r
+
+
+c1 = Campo(tipo=TipoDeCampo.INT,nombre='dni')
+c2 = Campo(tipo=TipoDeCampo.STRING,nombre='nombre')
+c3 = Campo(tipo=TipoDeCampo.STRING,nombre='apellido')
+campos = [c1,c2,c3]
+
+estruc = Estructura(nombre='Empleado',campos=campos)
+
+resultado = estruc._generar_includes_h()
+
+print(resultado)
