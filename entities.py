@@ -283,7 +283,7 @@ class Estructura():
         return r
 
     def _generar_condicion(self,campo):        
-        if campo.tipo == TipoDeCampo.INT or campo.tipo == TipoDeCampo.FLOAT or campo.tipo == TipoDeCampo.FKEY:
+        if campo.tipo == TipoDeCampo.INT.value() or campo.tipo == TipoDeCampo.FLOAT or campo.tipo == TipoDeCampo.FKEY:
             return f'||{self.nombre_min}_set{campo.nombre_may}Str(aux,{campo.nombre_min}Str)'
 
         elif campo.tipo == TipoDeCampo.STRING:
@@ -293,8 +293,8 @@ class Estructura():
         return f',char* {campo.nombre_min}Str'
 
     def generar_cuerpo(self):
-        condicion = ''
-        parametros = ''
+        condicion = ""
+        parametros = ""
         cuerpo = self._generar_includes()
 
         for campo in self.campos:
