@@ -405,9 +405,10 @@ class Estructura():
     def _generar_parametro_h(self,campo):
         return f",char* {campo.nombre_min}Str"
 
-    def _generar_cuerpo_h(self):
-        cuerpo = ""
+    def generar_cuerpo_h(self):
         parametros = "char* idStr"
+        cuerpo = self._generar_includes_h()
+
         for campo in self.campos:
             parametros += self._generar_parametro_h(campo)
             if campo.tipo == TipoDeCampo.INT or campo.tipo== TipoDeCampo.FKEY:
@@ -423,14 +424,3 @@ class Estructura():
 
         return cuerpo + new
 
-
-c1 = Campo(tipo=TipoDeCampo.INT,nombre='dni')
-c2 = Campo(tipo=TipoDeCampo.STRING,nombre='nombre')
-c3 = Campo(tipo=TipoDeCampo.STRING,nombre='apellido')
-campos = [c1,c2,c3]
-
-estruc = Estructura(nombre='Empleado',campos=campos)
-
-resultado = estruc._generar_includes_h()
-
-print(resultado)
