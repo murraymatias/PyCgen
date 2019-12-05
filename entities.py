@@ -368,6 +368,61 @@ class Estructura():
 
         return r
 
+    def _generar_int_h(self,campo):
+        c_min = campo.nombre_min
+        c_may = campo.nombre_may
+        s_min = self.nombre_min
+        s_may = self.nombre_may
+        r = (f"int {s_min}_set{c_may}Str({s_may}* this,char* {c_min}Str);\n"
+            f"int {s_min}_set{c_may}({s_may}* this,int {c_min});\n"
+            f"int {s_min}_get{c_may}({s_may}* this,int* {c_min});\n"
+            f"int {s_min}_compare{c_may}(void* p{s_may}A,void* p{s_may}B);\n\n")
+
+        return r
+
+    def _generar_float_h(self,campo):
+        c_min = campo.nombre_min
+        c_may = campo.nombre_may
+        s_min = self.nombre_min
+        s_may = self.nombre_may
+        r = (f"int {s_min}_set{c_may}Str({s_may}* this,char* {c_min}Str);\n"
+            f"int {s_min}_set{c_may}({s_may}* this,float {c_min});\n"
+            f"int {s_min}_get{c_may}({s_may}* this,float* {c_min});\n"
+            f"int {s_min}_compare{c_may}(void* p{s_may}A,void* p{s_may}B);\n\n")
+
+        return r
+
+    def _generar_string_h(self,campo):
+        c_min = campo.nombre_min
+        c_may = campo.nombre_may
+        s_min = self.nombre_min
+        s_may = self.nombre_may
+        r = (f"int {s_min}_set{c_may}({s_may}* this,char* {c_min});\n"
+            f"int {s_min}_get{c_may}({s_may}* this,char* {c_min});\n\n")
+
+        return r
+
+    def _generar_parametro_h(self,campo):
+        return f",char* {campo.nombre_min}Str"
+
+    def _generar_cuerpo_h(self):
+        cuerpo = ""
+        parametros = "char* idStr"
+        for campo in self.campos:
+            parametros += self._generar_parametro_h(campo)
+            if campo.tipo == TipoDeCampo.INT or campo.tipo== TipoDeCampo.FKEY:
+                cuerpo += self._generar_int_h(campo)
+
+            elif campo.tipo == TipoDeCampo.FLOAT:
+                cuerpo += self._generar_float_h(campo)
+            
+            elif campo.tipo == TipoDeCampo.STRING:
+                cuerpo += self._generar_string_h(campo)
+
+        new = f"{self.nombre_may}* {self.nombre_min}_newParametros({parametros});\n\n"
+
+        return cuerpo + new
+
 
 c1 = Campo(tipo=TipoDeCampo.INT,nombre='dni')
 c2 = Campo(tipo=TipoDeCampo.STRING,nombre='nombre')
