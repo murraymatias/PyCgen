@@ -283,10 +283,10 @@ class Estructura():
         return r
 
     def _generar_condicion(self,campo):        
-        if campo.tipo == TipoDeCampo.INT.value() or campo.tipo == TipoDeCampo.FLOAT or campo.tipo == TipoDeCampo.FKEY:
+        if campo.tipo == TipoDeCampo.INT.value or campo.tipo == TipoDeCampo.FLOAT.value or campo.tipo == TipoDeCampo.FKEY.value:
             return f'||{self.nombre_min}_set{campo.nombre_may}Str(aux,{campo.nombre_min}Str)'
 
-        elif campo.tipo == TipoDeCampo.STRING:
+        elif campo.tipo == TipoDeCampo.STRING.value:
             return f'||{self.nombre_min}_set{campo.nombre_may}(aux,{campo.nombre_min}Str)'
 
     def _generar_parametros(self,campo):
@@ -302,13 +302,13 @@ class Estructura():
             condicion += self._generar_condicion(campo)
             parametros += self._generar_parametros(campo)
 
-            if campo.tipo == TipoDeCampo.INT or campo.tipo== TipoDeCampo.FKEY:
+            if campo.tipo == TipoDeCampo.INT.value or campo.tipo == TipoDeCampo.FKEY.value:
                 cuerpo += self._generar_int(campo)
 
-            elif campo.tipo == TipoDeCampo.FLOAT:
+            elif campo.tipo == TipoDeCampo.FLOAT.value:
                 cuerpo += self._generar_float(campo)
             
-            elif campo.tipo == TipoDeCampo.STRING:
+            elif campo.tipo == TipoDeCampo.STRING.value:
                 cuerpo += self._generar_string(campo)
 
         minuns = self.nombre_min
@@ -338,13 +338,13 @@ class Estructura():
         campos = '    int id;\n'
 
         for campo in self.campos:
-            if(campo.tipo == TipoDeCampo.STRING):
+            if(campo.tipo == TipoDeCampo.STRING.value):
                 campos += f"    char {campo.nombre_min}[128];\n"
 
-            elif(campo.tipo == TipoDeCampo.INT or campo.tipo == TipoDeCampo.FKEY):
+            elif(campo.tipo == TipoDeCampo.INT.value or campo.tipo == TipoDeCampo.FKEY.value):
                 campos += f"    int {campo.nombre_min};\n"
 
-            elif(campo.tipo == TipoDeCampo.FLOAT):
+            elif(campo.tipo == TipoDeCampo.FLOAT.value):
                 campos += f"    float {campo.nombre_min};\n"
 
         r = (f"#ifndef {mayus}_H_INCLUDED\n"
@@ -411,13 +411,13 @@ class Estructura():
 
         for campo in self.campos:
             parametros += self._generar_parametro_h(campo)
-            if campo.tipo == TipoDeCampo.INT or campo.tipo== TipoDeCampo.FKEY:
+            if campo.tipo == TipoDeCampo.INT.value or campo.tipo== TipoDeCampo.FKEY.value:
                 cuerpo += self._generar_int_h(campo)
 
-            elif campo.tipo == TipoDeCampo.FLOAT:
+            elif campo.tipo == TipoDeCampo.FLOAT.value:
                 cuerpo += self._generar_float_h(campo)
             
-            elif campo.tipo == TipoDeCampo.STRING:
+            elif campo.tipo == TipoDeCampo.STRING.value:
                 cuerpo += self._generar_string_h(campo)
 
         new = f"{self.nombre_may}* {self.nombre_min}_newParametros({parametros});\n\n"
