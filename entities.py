@@ -398,7 +398,8 @@ class Estructura():
         s_min = self.nombre_min
         s_may = self.nombre_may
         r = (f"int {s_min}_set{c_may}({s_may}* this,char* {c_min});\n"
-            f"int {s_min}_get{c_may}({s_may}* this,char* {c_min});\n\n")
+            f"int {s_min}_get{c_may}({s_may}* this,char* {c_min});\n"
+            f"int {s_min}_compare{c_may}(void* p{s_may}A,void* p{s_may}B);\n\n")
 
         return r
 
@@ -424,3 +425,61 @@ class Estructura():
 
         return cuerpo + new
 
+    def _generar_controler_load_c(self):
+        s_min = self.nombre_min
+        s_may = self.nombre_may
+        r = (f"/** \\brief Carga los datos de los {s_min} desde el archivo data.csv (modo texto).\n"
+            f" *\n"
+            f" * \param path char*\n"
+            f" * \param this LinkedList*\n"
+            f" * \\return int\n"
+            f" *\n"
+            f" */\n"
+            f"int controller_load{s_may}FromText(char* path, LinkedList* this)\n"
+            f"{{\n"
+            f"    int ret=0;\n"
+            f"    FILE* pFile;\n"
+            f"    pFile = fopen(path,\"r\");\n"
+            f"    ret=parser_{s_may}FromText(pFile, this);\n"
+            f"    fclose(pFile);\n"
+            f"    return ret;\n"
+            f"}}\n\n")
+
+        return r
+
+    def _generar_controler_lastId_c(self):
+        s_min = self.nombre_min
+        s_may = self.nombre_may
+        r = (f"/** \\brief Obtiene el mayor id del LinkedList y lo carga en la estructura {s_may}.\n"
+            f"*\n"
+            f"* \param this LinkedList*\n"
+            f"* \\return int\n"
+            f"*\n"
+            f"*/\n"
+            f"int controller_lastId{s_may}(LinkedList* this)\n"
+            f"{{\n"
+            f"    {s_may}* buffer;\n"
+            f"    int bufferId;\n"
+            f"    int auxId = -1;\n"
+            f"    int ret = -1;\n"
+            f"    int i;\n"
+            f"    int len;\n"
+            f"    if(this!=NULL)\n"
+            f"    {{\n"
+            f"        len=ll_len(this);\n"
+            f"        for(i=0; i<len; i++)\n"
+            f"        {{\n"
+            f"            buffer=({s_may}*)ll_get(this,i);\n"
+            f"            {s_min}_getId(buffer,&bufferId);\n"
+            f"            if(bufferId>auxId)\n"
+            f"            {{\n"
+            f"                auxId=bufferId;\n"
+            f"            }}\n"
+            f"        }}\n"
+            f"        {s_min}_idInit(auxId);\n"
+            f"        ret = 0;\n"
+            f"    }}\n"
+            f"    return ret;\n"
+            f"}}\n\n")
+        
+        return r

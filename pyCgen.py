@@ -4,16 +4,16 @@ from entities import *
 from fileIO import *
 
 items = []
-tipos_dato = ['int','float','str','fk']
+tipos_dato = ['INT','FLOAT','STR','FKEY']
 
 def tipo_a_int(tipo):
-    if(tipo == 'int'):
+    if(tipo == 'INT'):
         return 0
-    elif(tipo == 'float'):
+    elif(tipo == 'FLOAT'):
         return 1
-    elif(tipo == 'str'):
+    elif(tipo == 'STR'):
         return 2
-    elif(tipo == 'fk'):
+    elif(tipo == 'FKEY'):
         return 3
     else:
         raise Exception("Tipo de campo invalido")
