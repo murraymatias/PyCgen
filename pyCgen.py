@@ -44,10 +44,10 @@ def crear_estructura():
     
     estructura = Estructura(txtb_nombre_estrectura.get(),campos)
 
-    FileIO.SaveText('output\\',estructura.nombre_may + '.c',estructura.generar_cuerpo())
-    FileIO.SaveText('output\\',estructura.nombre_may + '.h',estructura.generar_cuerpo_h())
-    FileIO.SaveText('output\\','Parser.c',estructura.generar_parser_c())
-    FileIO.SaveText('output\\','Parser.h',estructura.generar_parser_h())
+    FileIO.SaveText(estructura.nombre_may + '.c',estructura.generar_cuerpo())
+    FileIO.SaveText(estructura.nombre_may + '.h',estructura.generar_cuerpo_h())
+    FileIO.SaveText('Parser.c',estructura.generar_parser_c())
+    FileIO.SaveText('Parser.h',estructura.generar_parser_h())
 
 
 main = Tk()

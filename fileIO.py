@@ -1,8 +1,8 @@
 class FileIO():
 
     @staticmethod
-    def SaveText(path,filename,data):
-        with open(path+filename,'w') as f:
+    def SaveText(filename,data):
+        with open(filename,'w') as f:
             f.write(data)
 
 
