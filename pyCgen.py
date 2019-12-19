@@ -23,8 +23,17 @@ def agregar_field():
         items.append([Combobox(frame_fields,values=tipos_dato),Entry(frame_fields)])
 
         for index,item in enumerate(items):
-            item[0].grid(row=index+3,padx=5,pady=10)
-            item[1].grid(row=index+3,column=1,padx=5,pady=10)
+            item[0].grid(row=index+3,padx=5,pady=5)
+            item[1].grid(row=index+3,column=1,padx=5,pady=5)
+
+        Tk.update(main)
+
+def quitar_field():
+    if(len(items) > 0):
+        item = items.pop()
+
+        item[0].grid_forget()
+        item[1].grid_forget()
 
         Tk.update(main)
 
@@ -40,7 +49,7 @@ def crear_estructura():
 
 
 main = Tk()
-main.geometry("400x500")
+#main.geometry("400x500")
 main.title("PyCGen")
 
 frame_fields = Frame(main)
@@ -58,14 +67,22 @@ lbl_id_int.grid(row=2,padx=5,pady=10)
 lbl_id_nombre.grid(row=2,column=1,padx=5,pady=10)
 
 btn_agregar = Button(frame_buttons,text='Agregar campo',command=agregar_field)
+btn_quitar = Button(frame_buttons,text='Quitar campo',command=quitar_field)
 btn_salir = Button(frame_buttons,text='Salir',command=main.destroy)
 btn_aceptar = Button(frame_buttons,text='Aceptar y crear',command=crear_estructura)
 
-btn_agregar.pack()
-btn_salir.pack()
-btn_aceptar.pack()
+btn_agregar.config(width=30)
+btn_quitar.config(width=30)
+btn_salir.config(width=30)
+btn_aceptar.config(width=30)
+
+btn_agregar.grid(row=0, column=0,padx=2,pady=2)
+btn_quitar.grid(row=0, column=1,padx=2,pady=2)
+btn_salir.grid(row=1, column=0,padx=2,pady=2)
+btn_aceptar.grid(row=1, column=1,padx=2,pady=2)
 
 frame_fields.pack()
 frame_buttons.pack(side=BOTTOM)
 
+agregar_field()
 main.mainloop()
