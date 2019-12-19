@@ -440,7 +440,7 @@ class Estructura():
 
     def _generar_variables_buffer(self):
         r = ""
-        for campo in campos:
+        for campo in self.campos:
             r += f",buffer{campo.nombre_may}"
         
         return r
@@ -491,6 +491,8 @@ class Estructura():
             f"    }}\n"
             f"    return ret;\n"
             f"}}\n\n")
+
+        return r
 
     def generar_parser_h(self):
         return f"int parser_{self.nombre_may}FromText(FILE* pFile , LinkedList* pArrayList{self.nombre_may});"
