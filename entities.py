@@ -6,6 +6,12 @@ class TipoDeCampo(Enum):
     STRING = 2
     FKEY = 3
 
+class LList():
+    def generar_ll_C(self):
+        pass
+
+    def generar_ll_h(self):
+        pass
 
 class Campo():
     def __init__(self,tipo=TipoDeCampo.INT,nombre=''):
@@ -282,7 +288,7 @@ class Estructura():
             
         return r
 
-    def _generar_condicion(self,campo):        
+    def _generar_condicion(self,campo):
         if campo.tipo == TipoDeCampo.INT.value or campo.tipo == TipoDeCampo.FLOAT.value or campo.tipo == TipoDeCampo.FKEY.value:
             return f'||{self.nombre_min}_set{campo.nombre_may}Str(aux,{campo.nombre_min}Str)'
 
@@ -425,6 +431,70 @@ class Estructura():
 
         return cuerpo + new
 
+    def _generar_mascara_parser(self):
+        r = ""
+        for campo in self.campos:
+            r += "%[^,],"
+        
+        return r
+
+    def _generar_variables_buffer(self):
+        r = ""
+        for campo in campos:
+            r += f",buffer{campo.nombre_may}"
+        
+        return r
+    
+    def _generar_buffers_parser(self):
+        r = ""
+        for campo in self.campos:
+            r += f"char buffer{campo.nombre_may}[4096];\n"
+        
+        return r
+
+    def generar_parser_c(self):
+        s_min = self.nombre_min
+        s_may = self.nombre_may
+
+        r = (f"#include <stdio.h>\n"
+            f"#include <stdlib.h>\n"
+            f"#include \"LinkedList.h\"\n"
+            f"#include \"{s_may}.h\"\n\n"
+            f"/** \brief Parsea los datos los datos del tipo {s_may} desde el archivo recibido como parametro (modo texto).\n"
+            f" *\n"
+            f" * \param path char*\n"
+            f" * \param pArrayList{s_may} LinkedList*\n"
+            f" * \return int\n"
+            f" *\n"
+            f" */\n"
+            f"int parser_{s_may}FromText(FILE* pFile , LinkedList* pArrayList{s_may})\n"
+            f"{{\n"
+            f"    int ret= 0;\n"
+            f"    char bufferId[4096];\n"
+            f"    {self._generar_buffers_parser()}"
+            f"    {s_may} *p{s_may}\n\n"
+            f"    if(pFile!=NULL && pArrayList{s_may}!=NULL)\n"
+            f"    {{\n"
+            f"        fscanf(pFile,\"[^\\n]\\n\");\n"
+            f"        while(!feof(pFile))\n"
+            f"        {{\n"
+            f"            fscanf(pFile,\"{self._generar_mascara_parser}%[^\\n]\\n\", bufferId{self._generar_variables_buffer()});\n\n"
+            f"            p{s_may} = {s_min}_newParametros(bufferId{self._generar_variables_buffer()});\n\n"
+            f"            if(p{s_may} != NULL)\n"
+            f"            {{\n"
+            f"                if(!ll_add(pArrayList{s_may},p{s_may}))\n"
+            f"                {{\n"
+            f"                    ret++;\n"
+            f"                }}\n"
+            f"            }}\n"
+            f"        }}\n"
+            f"    }}\n"
+            f"    return ret;\n"
+            f"}}\n\n")
+
+    def generar_parser_h(self):
+        return f"int parser_{self.nombre_may}FromText(FILE* pFile , LinkedList* pArrayList{self.nombre_may});"
+
     def _generar_controler_load_c(self):
         s_min = self.nombre_min
         s_may = self.nombre_may
@@ -484,68 +554,3 @@ class Estructura():
         
         return r
 
-    def _generar_buffers_parser(self):
-        r = ""
-        for campo in self.campos:
-            r += f"char buffer{campo.nombre_may}[4096];\n"
-        
-        return r
-
-    def _generar_mascara_parser(self):
-        r = ""
-        for campo in self.campos:
-            r += "%[^,],"
-        
-        return r
-
-    def _generar_variables_buffer(self):
-        r = ""
-        for campo in campos:
-            r += f",buffer{campo.nombre_may}"
-        
-        return r
-
-    def generar_parser_c(self):
-        s_min = self.nombre_min
-        s_may = self.nombre_may
-
-        r = (f"#include <stdio.h>\n"
-            f"#include <stdlib.h>\n"
-            f"#include \"LinkedList.h\"\n"
-            f"#include \"{s_may}.h\"\n\n"
-            f"/** \brief Parsea los datos los datos del tipo {s_may} desde el archivo recibido como parametro (modo texto).\n"
-            f" *\n"
-            f" * \param path char*\n"
-            f" * \param pArrayList{s_may} LinkedList*\n"
-            f" * \return int\n"
-            f" *\n"
-            f" */\n"
-            f"int parser_{s_may}FromText(FILE* pFile , LinkedList* pArrayList{s_may})\n"
-            f"{{\n"
-            f"    int ret= 0;\n"
-            f"    char bufferId[4096];\n"
-            f"    {self._generar_buffers_parser()}"
-            f"    {s_may} *p{s_may}\n\n"
-            f"    if(pFile!=NULL && pArrayList{s_may}!=NULL)\n"
-            f"    {{\n"
-            f"        fscanf(pFile,\"[^\\n]\\n\");\n"
-            f"        while(!feof(pFile))\n"
-            f"        {{\n"
-            f"            fscanf(pFile,\"{self._generar_mascara_parser}%[^\\n]\\n\", bufferId{self._generar_variables_buffer()});\n\n"
-            f"            p{s_may} = {s_min}_newParametros(bufferId{self._generar_variables_buffer()});\n\n"
-            f"            if(p{s_may} != NULL)\n"
-            f"            {{\n"
-            f"                if(!ll_add(pArrayList{s_may},p{s_may}))\n"
-            f"                {{\n"
-            f"                    ret++;\n"
-            f"                }}\n"
-            f"            }}\n"
-            f"        }}\n"
-            f"    }}\n"
-            f"    return ret;\n"
-            f"}}\n\n")
-
-    def generar_parser_h(self):
-        return f"int parser_{self.nombre_may}FromText(FILE* pFile , LinkedList* pArrayList{self.nombre_may});"
-
-    
